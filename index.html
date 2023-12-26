@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generic Photo Frame</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .image-container {
+            width: 80%;
+            max-width: 600px;
+            margin: 20px auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: none; 
+        }
+        img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #passwordSection {
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="passwordSection">
+        <input type="password" id="passwordInput" placeholder="Enter password">
+        <button onclick="checkPassword()">Submit</button>
+    </div>
+    <div class="image-container" id="imageContainer">
+        <img id="randomImage" src="" alt="Random Image" />
+    </div>
+    <script>
+        var imageChangeInterval;
+        var imagePath = "your/image/path"; // Define your image path here
+
+        function checkPassword() {
+            var password = document.getElementById("passwordInput").value;
+            // Change the password here (in quotes) to whatever you want
+            if (password === "password") {
+                localStorage.setItem("authenticated", "true");
+                document.getElementById("passwordSection").style.display = "none";
+                document.getElementById("imageContainer").style.display = "block";
+                loadImages();
+            } else {
+                alert("Incorrect password!");
+            }
+        }
+
+        function loadImages() {
+            var startX, endX;
+            var isDragging = false;
+            var currentIndex = 0;
+            var imagesArray = [];
+
+            fetch('images.json')
+                .then(response => response.json())
+                .then(images => {
+                    imagesArray = images;
+                    displayRandomImage();
+
+                    imageChangeInterval = setInterval(displayRandomImage, 5000); 
+
+                    var container = document.getElementById("imageContainer");
+
+                    container.addEventListener("touchstart", handleStart, false);
+                    container.addEventListener("touchend", handleEnd, false);
+
+                    container.addEventListener("mousedown", handleStart, false);
+                    container.addEventListener("mouseup", handleEnd, false);
+                    container.addEventListener("mouseleave", handleEnd, false);
+
+                    function displayRandomImage() {
+                        var randomIndex = Math.floor(Math.random() * imagesArray.length);
+                        currentIndex = randomIndex;
+                        document.getElementById("randomImage").src = imagePath + imagesArray[currentIndex];
+                    }
+
+                    function handleStart(e) {
+                        clearInterval(imageChangeInterval); 
+                        isDragging = true;
+                        startX = e.type.includes('mouse') ? e.screenX : e.touches[0].screenX;
+                        e.preventDefault(); 
+                    }
+
+                    function handleEnd(e) {
+                        if (!isDragging) return; 
+                        isDragging = false;
+                        endX = e.type.includes('mouse') ? e.screenX : e.changedTouches[0].screenX;
+
+                        if (startX - endX > 50) {
+                            currentIndex = (currentIndex + 1) % imagesArray.length;
+                        } else if (startX - endX < -50) {
+                            currentIndex = (currentIndex - 1 + imagesArray.length) % imagesArray.length;
+                        }
+                        displayImage(currentIndex);
+                        imageChangeInterval = setInterval(displayRandomImage, 5000);
+                    }
+
+                    function displayImage(index) {
+                        document.getElementById("randomImage").src = imagePath + imagesArray[index];
+                    }
+
+                })
+                .catch(error => console.error('Error loading images:', error));
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            if (localStorage.getItem("authenticated") === "true") {
+                document.getElementById("passwordSection").style.display = "none";
+                document.getElementById("imageContainer").style.display = "block";
+                loadImages();
+            }
+        });
+    </script>
+</body>
+</html>
