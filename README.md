@@ -8,7 +8,6 @@ Welcome to Generic Photo Frame. With a few small edits, this project makes it re
 
 - **Git**: Ensure you have Git installed on your computer for cloning the repository. You can download Git from [the official website](https://git-scm.com/downloads).
 - **Python**: Ensure you have Python installed on your computer. This is necessary to run the script that renames and generates the list of images. You can download Python from [the official website](https://www.python.org/downloads/).
-- 
 1. **Clone the Project**: Open Terminal or Command Prompt and navigate to the directory where you want to clone the project (e.g. Desktop) by typing ```cd``` followed by the name of the directory. Then run the following command:
 
     ```
@@ -38,18 +37,18 @@ This script will rename the images in your specified directory to a standard for
 
 ### Configuring the HTML File
 
-1. **Set Image Path**: Open the HTML file (`index.html`) in a text editor. Locate the `imagePath` variable in the script section and set it to the path of your image directory relative to the HTML file. For example:
+1. **Set Image Path**: Open the HTML file (`index.html`) in a text editor. Locate the `imagePath` variable in the script section and set it to the path of your image directory relative to the HTML file. More specifically, on line 63 where it says
 ```
 var imagePath = "your/image/path";
 ```
-Replace "your/image/path" with the path you want to use to your images
+replace "your/image/path" with the path you want to use to your images
 
-2. **Set Password**: On the same script section, you can also set the password required to view the gallery. Find the checkPassword function and set your desired password:
+2. **Set Password**: In the same script section, you can also set the password required to view the gallery. Find the checkPassword function and set your desired password on line 66:
 ```
 if (password === "your_password_here") {
 ```
 
-Replace "your_password_here" with the password you want to use.
+replace "your_password_here" with the password you want to use.
 
 
 ### Opening the HTML Page
@@ -57,3 +56,8 @@ Replace "your_password_here" with the password you want to use.
 Open in a Browser: Double-click on the index.html file to open it in your default web browser. Alternatively, you can right-click the file and choose to open it with a specific browser.
 
 Enter the Password: When prompted, enter the password you set in the HTML file to access the image gallery.
+
+
+### Deployment
+
+There are many ways to deploy this, which one to use comes down to user preference. Once a domain name and hosting are acquired, though, you just need to upload this directory and it will work (assuming you have already generated ```images.json``` by running the Python script).
